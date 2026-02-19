@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 import {
   Users,
   UserCheck,
@@ -10,9 +10,9 @@ import {
   UserPlus,
   UserCog,
   Shield,
-  User
-} from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+  User,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,15 +21,13 @@ import {
   Title,
   Tooltip,
   Legend,
-  ArcElement
-} from 'chart.js';
-import { Bar, Pie } from 'react-chartjs-2';
-import toast from 'react-hot-toast';
+  ArcElement,
+} from "chart.js";
+import { Bar, Pie } from "react-chartjs-2";
+import toast from "react-hot-toast";
 import axiosInstance from "../utils/axiosInstance";
 
 const IMAGE_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
-
 
 ChartJS.register(
   CategoryScale,
@@ -38,7 +36,7 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
 );
 
 const Dashboard = () => {
@@ -57,14 +55,14 @@ const Dashboard = () => {
       total: 0,
       completed: 0,
       waiting: 0,
-      inMeeting: 0
+      inMeeting: 0,
     },
     todayVisitors: {
       total: 0,
       completed: 0,
       waiting: 0,
-      inMeeting: 0
-    }
+      inMeeting: 0,
+    },
   });
 
   const [allVisitors, setAllVisitors] = useState([]);
@@ -74,22 +72,18 @@ const Dashboard = () => {
   const [selectedVisitor, setSelectedVisitor] = useState(null);
   const [showVisitorModal, setShowVisitorModal] = useState(false);
 
-
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axiosInstance.get(
-        '/admin/dashboard/counts',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.get("/admin/dashboard/counts", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = res.data;
 
@@ -105,26 +99,25 @@ const Dashboard = () => {
           total: data.visitors.allTime.total,
           completed: data.visitors.allTime.completed,
           waiting: data.visitors.allTime.waiting,
-          inMeeting: data.visitors.allTime.inMeeting
+          inMeeting: data.visitors.allTime.inMeeting,
         },
         todayVisitors: {
           total: data.visitors.today.total,
           completed: data.visitors.today.completed,
           waiting: data.visitors.today.waiting,
-          inMeeting: data.visitors.today.inMeeting
-        }
+          inMeeting: data.visitors.today.inMeeting,
+        },
       });
 
       setAllVisitors(data.visitors.allTime.list || []);
       setTodayVisitors(data.visitors.today.list || []);
     } catch (error) {
-      toast.error('Failed to fetch dashboard data');
-      console.error('Dashboard fetch error:', error);
+      toast.error("Failed to fetch dashboard data");
+      console.error("Dashboard fetch error:", error);
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleStatusChange = async (visitorId, newStatus) => {
     try {
@@ -135,9 +128,9 @@ const Dashboard = () => {
         { status: newStatus },
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
 
       toast.success("Visitor status updated successfully");
@@ -148,166 +141,165 @@ const Dashboard = () => {
     }
   };
 
-
   const handleVisitorClick = async (visitorId) => {
     try {
       const token = localStorage.getItem("token");
 
-      const res = await axiosInstance.get(
-        `/visitors/${visitorId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const res = await axiosInstance.get(`/visitors/${visitorId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       setSelectedVisitor(res.data);
       setShowVisitorModal(true);
-
     } catch (error) {
       toast.error("Failed to fetch visitor details");
     }
   };
 
-
   /* ================= Stats Cards ================= */
 
   const stats = [
     {
-      title: 'Today Visitors',
+      title: "Today Visitors",
       value: counts.todayVisitors.total,
       icon: Calendar,
-      color: 'bg-blue-500'
+      color: "bg-blue-500",
     },
     {
-      title: 'Waiting Today',
+      title: "Waiting Today",
       value: counts.todayVisitors.waiting,
       icon: Clock,
-      color: 'bg-yellow-500'
+      color: "bg-yellow-500",
     },
     {
-      title: 'In Meeting Today',
+      title: "In Meeting Today",
       value: counts.todayVisitors.inMeeting,
       icon: Users,
-      color: 'bg-purple-500'
+      color: "bg-purple-500",
     },
     {
-      title: 'Completed Today',
+      title: "Completed Today",
       value: counts.todayVisitors.completed,
       icon: UserCheck,
-      color: 'bg-green-500'
-    }
+      color: "bg-green-500",
+    },
   ];
 
   const userStats = [
     {
-      title: 'Total Users',
+      title: "Total Users",
       value: counts.totalUsers,
       icon: Users,
-      color: 'bg-indigo-500'
+      color: "bg-indigo-500",
     },
     {
-      title: 'Employees',
+      title: "Employees",
       value: counts.employee,
       icon: User,
-      color: 'bg-blue-500'
+      color: "bg-blue-500",
     },
     {
-      title: 'Admins',
+      title: "Admins",
       value: counts.admin,
       icon: UserCog,
-      color: 'bg-red-500'
+      color: "bg-red-500",
     },
     {
-      title: 'Reception',
+      title: "Reception",
       value: counts.reception,
       icon: UserCheck,
-      color: 'bg-green-500'
+      color: "bg-green-500",
     },
     {
-      title: 'Security',
+      title: "Security",
       value: counts.security,
       icon: Shield,
-      color: 'bg-yellow-500'
+      color: "bg-yellow-500",
     },
     {
-      title: 'Active Users',
+      title: "Active Users",
       value: counts.active,
       icon: UserCheck,
-      color: 'bg-emerald-500'
-    }
+      color: "bg-emerald-500",
+    },
   ];
 
   /* ================= Chart Data ================= */
 
   const todayChartData = {
-    labels: ['Waiting', 'In Meeting', 'Completed'],
+    labels: ["Waiting", "In Meeting", "Completed"],
     datasets: [
       {
-        label: 'Today Visitor Status',
+        label: "Today Visitor Status",
         data: [
           counts.todayVisitors.waiting,
           counts.todayVisitors.inMeeting,
-          counts.todayVisitors.completed
+          counts.todayVisitors.completed,
         ],
         backgroundColor: [
-          'rgba(251, 191, 36, 0.7)',
-          'rgba(59, 130, 246, 0.7)',
-          'rgba(34, 197, 94, 0.7)'
+          "rgba(251, 191, 36, 0.7)",
+          "rgba(59, 130, 246, 0.7)",
+          "rgba(34, 197, 94, 0.7)",
         ],
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const allTimeChartData = {
-    labels: ['Waiting', 'In Meeting', 'Completed'],
+    labels: ["Waiting", "In Meeting", "Completed"],
     datasets: [
       {
-        label: 'All Time Visitor Status',
+        label: "All Time Visitor Status",
         data: [
           counts.allTimeVisitors.waiting,
           counts.allTimeVisitors.inMeeting,
-          counts.allTimeVisitors.completed
+          counts.allTimeVisitors.completed,
         ],
         backgroundColor: [
-          'rgba(251, 191, 36, 0.7)',
-          'rgba(59, 130, 246, 0.7)',
-          'rgba(34, 197, 94, 0.7)'
+          "rgba(251, 191, 36, 0.7)",
+          "rgba(59, 130, 246, 0.7)",
+          "rgba(34, 197, 94, 0.7)",
         ],
-        borderWidth: 1
-      }
-    ]
+        borderWidth: 1,
+      },
+    ],
   };
 
   const userRoleChartData = {
-    labels: ['Admin', 'Reception', 'Security', 'Employee'],
+    labels: ["Admin", "Reception", "Security", "Employee"],
     datasets: [
       {
-        label: 'Users by Role',
-        data: [counts.admin, counts.reception, counts.security, counts.employee],
-        backgroundColor: [
-          'rgba(239, 68, 68, 0.7)',
-          'rgba(34, 197, 94, 0.7)',
-          'rgba(234, 179, 8, 0.7)',
-          'rgba(59, 130, 246, 0.7)'
+        label: "Users by Role",
+        data: [
+          counts.admin,
+          counts.reception,
+          counts.security,
+          counts.employee,
         ],
-        borderWidth: 1
-      }
-    ]
+        backgroundColor: [
+          "rgba(239, 68, 68, 0.7)",
+          "rgba(34, 197, 94, 0.7)",
+          "rgba(234, 179, 8, 0.7)",
+          "rgba(59, 130, 246, 0.7)",
+        ],
+        borderWidth: 1,
+      },
+    ],
   };
 
   const getStatusBadgeColor = (status) => {
     switch (status) {
-      case 'WAITING':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'IN_MEETING':
-        return 'bg-blue-100 text-blue-800';
-      case 'COMPLETED':
-        return 'bg-green-100 text-green-800';
+      case "WAITING":
+        return "bg-yellow-100 text-yellow-800";
+      case "IN_MEETING":
+        return "bg-blue-100 text-blue-800";
+      case "COMPLETED":
+        return "bg-green-100 text-green-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
@@ -328,7 +320,6 @@ const Dashboard = () => {
       <header className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
-
             {/* Left Side */}
             <div className="flex items-center space-x-3">
               <img
@@ -351,9 +342,9 @@ const Dashboard = () => {
                 {user?.role}
               </span>
 
-              {user?.role === 'ADMIN' && (
+              {user?.role === "ADMIN" && (
                 <button
-                  onClick={() => navigate('/users')}
+                  onClick={() => navigate("/users")}
                   className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                 >
                   <Users className="w-4 h-4" />
@@ -369,27 +360,26 @@ const Dashboard = () => {
                 <span>Logout</span>
               </button>
             </div>
-
           </div>
         </div>
       </header>
 
-
       {/* Main */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-
         {/* Today's Stats */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Today's Overview</h2>
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">
+            Today's Overview
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition">
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition"
+              >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500 mb-1">
-                      {stat.title}
-                    </p>
+                    <p className="text-sm text-gray-500 mb-1">{stat.title}</p>
                     <p className="text-2xl font-bold text-gray-900">
                       {stat.value}
                     </p>
@@ -403,33 +393,33 @@ const Dashboard = () => {
           </div>
         </div>
 
-
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-
           <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-sm p-6 text-white">
             <h3 className="text-lg font-semibold mb-2">Today's Visitors</h3>
             <p className="text-3xl font-bold">{counts.todayVisitors.total}</p>
             <p className="text-sm opacity-90 mt-2">
-              {counts.todayVisitors.completed} completed · {counts.todayVisitors.waiting} waiting · {counts.todayVisitors.inMeeting} in meeting
+              {counts.todayVisitors.completed} completed ·{" "}
+              {counts.todayVisitors.waiting} waiting ·{" "}
+              {counts.todayVisitors.inMeeting} in meeting
             </p>
           </div>
-
 
           <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-sm p-6 text-white">
             <h3 className="text-lg font-semibold mb-2">All Time Visitors</h3>
             <p className="text-3xl font-bold">{counts.allTimeVisitors.total}</p>
             <p className="text-sm opacity-90 mt-2">
-              {counts.allTimeVisitors.completed} completed · {counts.allTimeVisitors.waiting} waiting · {counts.allTimeVisitors.inMeeting} in meeting
+              {counts.allTimeVisitors.completed} completed ·{" "}
+              {counts.allTimeVisitors.waiting} waiting ·{" "}
+              {counts.allTimeVisitors.inMeeting} in meeting
             </p>
           </div>
         </div>
 
-
         {/* Action Buttons */}
         <div className="mb-8 flex flex-wrap gap-4 mt-10">
           <button
-            onClick={() => navigate('/create-visitor')}
+            onClick={() => navigate("/create-visitor")}
             className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:opacity-90 transition shadow-md"
           >
             <UserPlus className="w-5 h-5" />
@@ -437,7 +427,7 @@ const Dashboard = () => {
           </button>
 
           <button
-            onClick={() => navigate('/visitors')}
+            onClick={() => navigate("/visitors")}
             className="flex items-center space-x-2 px-6 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg hover:opacity-90 transition shadow-md"
           >
             <Users className="w-5 h-5" />
@@ -454,7 +444,10 @@ const Dashboard = () => {
             </h2>
             {counts.todayVisitors.total > 0 ? (
               <div className="h-64">
-                <Pie data={todayChartData} options={{ maintainAspectRatio: false }} />
+                <Pie
+                  data={todayChartData}
+                  options={{ maintainAspectRatio: false }}
+                />
               </div>
             ) : (
               <div className="h-64 flex items-center justify-center text-gray-500">
@@ -470,7 +463,10 @@ const Dashboard = () => {
             </h2>
             {counts.allTimeVisitors.total > 0 ? (
               <div className="h-64">
-                <Pie data={allTimeChartData} options={{ maintainAspectRatio: false }} />
+                <Pie
+                  data={allTimeChartData}
+                  options={{ maintainAspectRatio: false }}
+                />
               </div>
             ) : (
               <div className="h-64 flex items-center justify-center text-gray-500">
@@ -478,8 +474,6 @@ const Dashboard = () => {
               </div>
             )}
           </div>
-
-
         </div>
 
         {/* Visitors Lists */}
@@ -491,7 +485,7 @@ const Dashboard = () => {
                 Today's Visitors ({counts.todayVisitors.total})
               </h2>
               <button
-                onClick={() => navigate('/visitors')}
+                onClick={() => navigate("/visitors")}
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
                 View All
@@ -504,24 +498,23 @@ const Dashboard = () => {
                   <div
                     key={visitor._id}
                     onClick={() => handleVisitorClick(visitor._id)}
-
                     className="flex items-center space-x-4 border-b pb-3 hover:bg-gray-50 p-2 rounded transition cursor-pointer"
                   >
                     <img
                       // src={`http://localhost:5001${visitor.photo}`}
-                      src={`${IMAGE_BASE_URL}${visitor.photo}`}
+                      src={`${IMAGE_BASE_URL}${visitor.photo || visitor?.visitorIdPhoto}`}
                       alt={visitor.name}
                       className="w-12 h-12 rounded-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/48';
-                      }}
+                      // onError={(e) => {
+                      //   e.target.src = 'https://via.placeholder.com/48';
+                      // }}
                     />
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">
                         {visitor.name}
                       </p>
                       <p className="text-xs text-gray-500">
-                        Meeting with: {visitor.employeeToMeet?.name || 'N/A'}
+                        Meeting with: {visitor.employeeToMeet?.name || "N/A"}
                       </p>
                       <p className="text-xs text-gray-400">
                         {new Date(visitor.inTime).toLocaleTimeString()}
@@ -542,15 +535,18 @@ const Dashboard = () => {
 
                       {/* Status Buttons */}
                       <div className="flex space-x-1">
-
                         {/* WAITING BUTTON */}
                         <button
                           disabled={visitor.status === "COMPLETED"}
-                          onClick={() => handleStatusChange(visitor._id, "WAITING")}
+                          onClick={() =>
+                            handleStatusChange(visitor._id, "WAITING")
+                          }
                           className={`text-xs px-2 py-1 rounded text-white 
-        ${visitor.status === "COMPLETED"
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-yellow-500 hover:bg-yellow-600"}
+        ${
+          visitor.status === "COMPLETED"
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-yellow-500 hover:bg-yellow-600"
+        }
       `}
                         >
                           Waiting
@@ -559,11 +555,15 @@ const Dashboard = () => {
                         {/* IN MEETING BUTTON */}
                         <button
                           disabled={visitor.status === "COMPLETED"}
-                          onClick={() => handleStatusChange(visitor._id, "IN_MEETING")}
+                          onClick={() =>
+                            handleStatusChange(visitor._id, "IN_MEETING")
+                          }
                           className={`text-xs px-2 py-1 rounded text-white 
-        ${visitor.status === "COMPLETED"
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-blue-500 hover:bg-blue-600"}
+        ${
+          visitor.status === "COMPLETED"
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+        }
       `}
                         >
                           In Meeting
@@ -572,25 +572,28 @@ const Dashboard = () => {
                         {/* COMPLETED BUTTON */}
                         <button
                           disabled={visitor.status === "COMPLETED"}
-                          onClick={() => handleStatusChange(visitor._id, "COMPLETED")}
+                          onClick={() =>
+                            handleStatusChange(visitor._id, "COMPLETED")
+                          }
                           className={`text-xs px-2 py-1 rounded text-white 
-        ${visitor.status === "COMPLETED"
-                              ? "bg-gray-400 cursor-not-allowed"
-                              : "bg-green-500 hover:bg-green-600"}
+        ${
+          visitor.status === "COMPLETED"
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-500 hover:bg-green-600"
+        }
       `}
                         >
                           Completed
                         </button>
-
                       </div>
                     </div>
-
-
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-500 text-center py-8">No visitors today</p>
+              <p className="text-gray-500 text-center py-8">
+                No visitors today
+              </p>
             )}
           </div>
 
@@ -601,7 +604,7 @@ const Dashboard = () => {
                 Recent Visitors ({counts.allTimeVisitors.total})
               </h2>
               <button
-                onClick={() => navigate('/visitors')}
+                onClick={() => navigate("/visitors")}
                 className="text-sm text-blue-600 hover:text-blue-800"
               >
                 View All
@@ -614,28 +617,27 @@ const Dashboard = () => {
                   <div
                     key={visitor._id}
                     onClick={() => handleVisitorClick(visitor._id)}
-
                     className="flex items-center space-x-4 border-b pb-3 hover:bg-gray-50 p-2 rounded transition cursor-pointer"
                   >
                     <img
                       // src={`http://localhost:5001${visitor.photo}`}
-                      src={`${IMAGE_BASE_URL}${visitor.photo}`}
-
+                      src={`${IMAGE_BASE_URL}${visitor.photo || visitor.visitorIdPhoto}`}
                       alt={visitor.name}
                       className="w-12 h-12 rounded-full object-cover"
-                      onError={(e) => {
-                        e.target.src = 'https://via.placeholder.com/48';
-                      }}
+                      // onError={(e) => {
+                      //   e.target.src = 'https://via.placeholder.com/48';
+                      // }}
                     />
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">
                         {visitor.name}
                       </p>
                       <p className="text-xs text-gray-500">
-                        Meeting with: {visitor.employeeToMeet?.name || 'N/A'}
+                        Meeting with: {visitor.employeeToMeet?.name || "N/A"}
                       </p>
                       <p className="text-xs text-gray-400">
-                        {new Date(visitor.inTime).toLocaleDateString()} {new Date(visitor.inTime).toLocaleTimeString()}
+                        {new Date(visitor.inTime).toLocaleDateString()}{" "}
+                        {new Date(visitor.inTime).toLocaleTimeString()}
                       </p>
                     </div>
                     {/* <span
@@ -656,12 +658,15 @@ const Dashboard = () => {
                         {visitor.status !== "WAITING" && (
                           <button
                             disabled={visitor.status === "COMPLETED"}
-                            onClick={() => handleStatusChange(visitor._id, "WAITING")}
+                            onClick={() =>
+                              handleStatusChange(visitor._id, "WAITING")
+                            }
                             className={`text-xs px-2 py-1 rounded text-white
-          ${visitor.status === "COMPLETED"
-                                ? "bg-gray-300 cursor-not-allowed"
-                                : "bg-yellow-500 hover:bg-yellow-600"
-                              }`}
+          ${
+            visitor.status === "COMPLETED"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-yellow-500 hover:bg-yellow-600"
+          }`}
                           >
                             Waiting
                           </button>
@@ -670,12 +675,15 @@ const Dashboard = () => {
                         {visitor.status !== "IN_MEETING" && (
                           <button
                             disabled={visitor.status === "COMPLETED"}
-                            onClick={() => handleStatusChange(visitor._id, "IN_MEETING")}
+                            onClick={() =>
+                              handleStatusChange(visitor._id, "IN_MEETING")
+                            }
                             className={`text-xs px-2 py-1 rounded text-white
-          ${visitor.status === "COMPLETED"
-                                ? "bg-gray-300 cursor-not-allowed"
-                                : "bg-blue-500 hover:bg-blue-600"
-                              }`}
+          ${
+            visitor.status === "COMPLETED"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
                           >
                             In Meeting
                           </button>
@@ -684,20 +692,21 @@ const Dashboard = () => {
                         {visitor.status !== "COMPLETED" && (
                           <button
                             disabled={visitor.status === "COMPLETED"}
-                            onClick={() => handleStatusChange(visitor._id, "COMPLETED")}
+                            onClick={() =>
+                              handleStatusChange(visitor._id, "COMPLETED")
+                            }
                             className={`text-xs px-2 py-1 rounded text-white
-          ${visitor.status === "COMPLETED"
-                                ? "bg-gray-400 cursor-not-allowed"
-                                : "bg-green-500 hover:bg-green-600"
-                              }`}
+          ${
+            visitor.status === "COMPLETED"
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-500 hover:bg-green-600"
+          }`}
                           >
                             Completed
                           </button>
                         )}
                       </div>
                     </div>
-
-
                   </div>
                 ))}
               </div>
@@ -706,15 +715,12 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-
       </main>
 
       {/* visitor details modal */}
       {showVisitorModal && selectedVisitor && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
-
             {/* Close Button */}
             <button
               onClick={() => {
@@ -729,13 +735,13 @@ const Dashboard = () => {
             {/* Header Section */}
             <div className="p-6 border-b flex items-center space-x-6">
               <img
-                src={`${IMAGE_BASE_URL}${selectedVisitor.photo}`}
+                src={`${IMAGE_BASE_URL}${selectedVisitor.photo || selectedVisitor?.visitorIdPhoto}`}
                 alt={selectedVisitor.name}
                 className="w-24 h-24 rounded-2xl object-cover border-4 border-gray-200 shadow"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://via.placeholder.com/100";
-                }}
+                // onError={(e) => {
+                //   e.target.onerror = null;
+                //   e.target.src = "https://via.placeholder.com/100";
+                // }}
               />
 
               <div>
@@ -745,7 +751,7 @@ const Dashboard = () => {
 
                 <span
                   className={`mt-2 inline-flex px-4 py-1 text-sm font-semibold rounded-full ${getStatusBadgeColor(
-                    selectedVisitor.status
+                    selectedVisitor.status,
                   )}`}
                 >
                   {selectedVisitor.status}
@@ -755,7 +761,6 @@ const Dashboard = () => {
 
             {/* Body */}
             <div className="p-6 space-y-6">
-
               {/* Contact Info */}
               <div className="bg-gray-50 p-4 rounded-xl">
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">
@@ -763,8 +768,14 @@ const Dashboard = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
-                  <p><span className="font-medium text-gray-600">Email:</span> {selectedVisitor.email}</p>
-                  <p><span className="font-medium text-gray-600">Mobile:</span> {selectedVisitor.mobile}</p>
+                  <p>
+                    <span className="font-medium text-gray-600">Email:</span>{" "}
+                    {selectedVisitor.email}
+                  </p>
+                  <p>
+                    <span className="font-medium text-gray-600">Mobile:</span>{" "}
+                    {selectedVisitor.mobile}
+                  </p>
                 </div>
               </div>
 
@@ -786,7 +797,9 @@ const Dashboard = () => {
                   </p>
 
                   <p>
-                    <span className="font-medium text-gray-600">Check-in Time:</span>{" "}
+                    <span className="font-medium text-gray-600">
+                      Check-in Time:
+                    </span>{" "}
                     {new Date(selectedVisitor.inTime).toLocaleString()}
                   </p>
                 </div>
@@ -799,13 +812,14 @@ const Dashboard = () => {
                 </h3>
 
                 <div className="space-y-2 text-sm">
-
                   {selectedVisitor.meetingStartTime && (
                     <p>
                       <span className="font-medium text-blue-600">
                         Meeting Started:
                       </span>{" "}
-                      {new Date(selectedVisitor.meetingStartTime).toLocaleString()}
+                      {new Date(
+                        selectedVisitor.meetingStartTime,
+                      ).toLocaleString()}
                     </p>
                   )}
 
@@ -814,7 +828,9 @@ const Dashboard = () => {
                       <span className="font-medium text-green-600">
                         Meeting Ended:
                       </span>{" "}
-                      {new Date(selectedVisitor.meetingEndTime).toLocaleString()}
+                      {new Date(
+                        selectedVisitor.meetingEndTime,
+                      ).toLocaleString()}
                     </p>
                   )}
 
@@ -823,18 +839,12 @@ const Dashboard = () => {
                       Total Meeting Duration: {selectedVisitor.meetingDuration}
                     </p>
                   )}
-
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       )}
-
-
-
-
     </div>
   );
 };
