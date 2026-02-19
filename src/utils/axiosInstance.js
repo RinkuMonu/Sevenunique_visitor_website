@@ -3,7 +3,8 @@ import axios from "axios";
 // Axios instance create
 const axiosInstance = axios.create({
   // baseURL: "http://localhost:5001/api",
-  baseURL: "https://visitor-backend-t6nh.onrender.com/api",
+  // baseURL: "https://visitor-backend-t6nh.onrender.com/api",
+  baseURL: "https://visitorserver.sevenunique.com/api",
   headers: {
     "Content-Type": "application/json"
   }
