@@ -299,7 +299,7 @@ const CreateVisitor = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* Left Column - Photo Capture */}
               <div className="lg:col-span-1">
-                <div className="sticky top-24">
+                <div className="">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     Visitor Photo
                   </label>
@@ -597,7 +597,7 @@ const CreateVisitor = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-2">
-                      Email Address <span className="text-red-500">*</span>
+                      Email Address 
                     </label>
                     <div className="relative group">
                       <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition">
